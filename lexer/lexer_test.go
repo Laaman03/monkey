@@ -1,8 +1,8 @@
 package lexer
 
 import (
-	"testing"
 	"github.com/Laaman03/monkey/token"
+	"testing"
 )
 
 func TestNextToken(t *testing.T) {
@@ -23,8 +23,8 @@ func TestNextToken(t *testing.T) {
 	10 == 10;
 	10 != 9;
 	`
-	tests := []struct{
-		expectedType token.TokenType
+	tests := []struct {
+		expectedType    token.TokenType
 		expectedLiteral string
 	}{
 		{token.LET, "let"},
