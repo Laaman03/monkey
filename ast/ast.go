@@ -1,8 +1,8 @@
 package ast
 
 import (
-	"github.com/Laaman03/monkey/token"
 	"bytes"
+	"github.com/Laaman03/monkey/token"
 )
 
 type Node interface {
@@ -51,14 +51,14 @@ type IntegerLiteral struct {
 }
 
 type PrefixExpression struct {
-	Token token.Token
+	Token    token.Token
 	Operator string
-	Right Expression
+	Right    Expression
 }
 
 func (i *Identifier) expressionNode()      {}
 func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
-func (i *Identifier) String() string { return i.Value }
+func (i *Identifier) String() string       { return i.Value }
 
 func (rs *ReturnStatement) statementNode()       {}
 func (rs *ReturnStatement) TokenLiteral() string { return rs.Token.Literal }
@@ -73,7 +73,7 @@ func (rs *ReturnStatement) String() string {
 	return out.String()
 }
 
-func (es *ExpressionStatement) statementNode()	{}
+func (es *ExpressionStatement) statementNode()       {}
 func (es *ExpressionStatement) TokenLiteral() string { return es.Token.Literal }
 func (es *ExpressionStatement) String() string {
 	if es.Expression != nil {
@@ -99,11 +99,11 @@ func (ls *LetStatement) String() string {
 	return out.String()
 }
 
-func (il *IntegerLiteral) expressionNode()	{}
+func (il *IntegerLiteral) expressionNode()      {}
 func (il *IntegerLiteral) TokenLiteral() string { return il.Token.Literal }
-func (il *IntegerLiteral) String() string { return il.Token.Literal }
+func (il *IntegerLiteral) String() string       { return il.Token.Literal }
 
-func (pe *PrefixExpression) expressionNode(){}
+func (pe *PrefixExpression) expressionNode()      {}
 func (pe *PrefixExpression) TokenLiteral() string { return pe.Token.Literal }
 func (pe *PrefixExpression) String() string {
 	var out bytes.Buffer

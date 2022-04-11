@@ -1,10 +1,10 @@
 package parser
 
 import (
+	"fmt"
 	"github.com/Laaman03/monkey/ast"
 	"github.com/Laaman03/monkey/lexer"
 	"testing"
-	"fmt"
 )
 
 func TestLetStatements(t *testing.T) {
@@ -65,7 +65,6 @@ func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
 	}
 	return true
 }
-
 
 func TestReturnStatements(t *testing.T) {
 	input := `
@@ -151,9 +150,9 @@ func TestIntegerLiteral(t *testing.T) {
 }
 
 func TestParsingPrefix(t *testing.T) {
-	prefixTests := []struct{
-		input string
-		operator string
+	prefixTests := []struct {
+		input        string
+		operator     string
 		integerValue int64
 	}{
 		{"!5;", "!", 5},

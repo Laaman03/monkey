@@ -2,21 +2,21 @@ package parser
 
 import (
 	"fmt"
-	"strconv"
 	"github.com/Laaman03/monkey/ast"
 	"github.com/Laaman03/monkey/lexer"
 	"github.com/Laaman03/monkey/token"
+	"strconv"
 )
 
-const (			// precedences (lower in the list means highest precedence)
+const ( // precedences (lower in the list means highest precedence)
 	_ int = iota
 	LOWEST
-	EQUALS		// ==
-	LESSGREATER	// > or <
-	SUM			// +
-	PRODUCT		// *
-	PREFIX		// -x o !x
-	CALL		// func(x, y)
+	EQUALS      // ==
+	LESSGREATER // > or <
+	SUM         // +
+	PRODUCT     // *
+	PREFIX      // -x o !x
+	CALL        // func(x, y)
 )
 
 type Parser struct {
@@ -26,12 +26,12 @@ type Parser struct {
 	errors    []string
 
 	prefixParseFns map[token.TokenType]prefixParseFn
-	infixParseFns map[token.TokenType]infixParseFn
+	infixParseFns  map[token.TokenType]infixParseFn
 }
 
 type (
 	prefixParseFn func() ast.Expression
-	infixParseFn func(ast.Expression) ast.Expression
+	infixParseFn  func(ast.Expression) ast.Expression
 )
 
 func (p *Parser) registerPrefixParseFn(tokenType token.TokenType, fn prefixParseFn) {
@@ -77,7 +77,7 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 
 func (p *Parser) parsePrefixExpression() ast.Expression {
 	expression := &ast.PrefixExpression{
-		Token: p.curToken,
+		Token:    p.curToken,
 		Operator: p.curToken.Literal,
 	}
 	p.nextToken()
@@ -144,7 +144,7 @@ func (p *Parser) parseLetStatement() *ast.LetStatement {
 
 func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	stmt := &ast.ReturnStatement{Token: p.curToken}
-	
+
 	// TODO: We're stipping the expressions
 	// until we encounter a semicolon
 
