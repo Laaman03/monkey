@@ -20,14 +20,14 @@ const ( // precedences (lower in the list means highest precedence)
 )
 
 var precedences = map[token.TokenType]int{
-	token.EQ: EQUALS,
-	token.NEQ: EQUALS,
-	token.GT: LESSGREATER,
-	token.LT: LESSGREATER,
-	token.PLUS: SUM,
-	token.MINUS: SUM,
+	token.EQ:       EQUALS,
+	token.NEQ:      EQUALS,
+	token.GT:       LESSGREATER,
+	token.LT:       LESSGREATER,
+	token.PLUS:     SUM,
+	token.MINUS:    SUM,
 	token.ASTERISK: PRODUCT,
-	token.SLASH: PRODUCT,
+	token.SLASH:    PRODUCT,
 }
 
 type Parser struct {
@@ -72,6 +72,7 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerPrefixParseFn(token.FALSE, p.parseBoolean)
 	p.registerPrefixParseFn(token.LPAREN, p.parseGroupedExpression)
 	p.registerPrefixParseFn(token.IF, p.parseIfExpression)
+	p.registerPrefixParseFn(token.FUNCTION, p.parseFunctionLiteral)
 
 	p.registerInfixParseFn(token.PLUS, p.parseInfixExpression)
 	p.registerInfixParseFn(token.MINUS, p.parseInfixExpression)
@@ -145,6 +146,40 @@ func (p *Parser) parseIfExpression() ast.Expression {
 	return expression
 }
 
+func (p *Parser) parseFunctionLiteral() ast.Expression {
+	lit := &ast.FunctionLiteral{Token: p.curToken}
+	if !p.expectPeek(token.LPAREN) {
+		return nil
+	}
+	lit.Parameters = p.parseFunctionParameters()
+	if !p.expectPeek(token.LBRACE) {
+		return nil
+	}
+	lit.Body = p.parseBlockStatement()
+	return lit
+}
+
+func (p *Parser) parseFunctionParameters() []*ast.Identifier {
+	identifiers := []*ast.Identifier{}
+	if p.peekTokenIs(token.RPAREN) {
+		p.nextToken()
+		return identifiers
+	}
+	p.nextToken()
+	ident := &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+	identifiers = append(identifiers, ident)
+	for p.peekTokenIs(token.COMMA) {
+		p.nextToken() // curToken ','
+		p.nextToken() // curToken is now the identifier
+		ident := &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}
+		identifiers = append(identifiers, ident)
+	}
+	if !p.expectPeek(token.RPAREN) {
+		return nil
+	}
+	return identifiers
+}
+
 func (p *Parser) parseGroupedExpression() ast.Expression {
 	p.nextToken()
 
@@ -158,9 +193,9 @@ func (p *Parser) parseGroupedExpression() ast.Expression {
 
 func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 	expression := &ast.InfixExpression{
-		Token: p.curToken,
+		Token:    p.curToken,
 		Operator: p.curToken.Literal,
-		Left: left,
+		Left:     left,
 	}
 	precedence := p.curPrecedence()
 	p.nextToken()
